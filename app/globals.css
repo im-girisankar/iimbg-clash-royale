@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────
+   One game, one palette. The app commits to dark on purpose: it
+   is read in a dim hall and projected on a screen at the front,
+   so there is no light theme to fall back to and every colour is
+   stated outright.
+
+   Clash Royale's arena at night — deep blue-violet stone, crown
+   gold, a trace of elixir purple.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  color-scheme: dark;
+
+  --ground:      #0D1030;
+  --surface:     #161A45;
+  --surface-2:   #1E2456;
+  --line:        rgb(160 180 255 / 0.13);
+  --line-strong: rgb(160 180 255 / 0.24);
+  --fg:          #F0F2FF;
+  --fg-muted:    #9BA3CE;
+  --fg-subtle:   #6C74A3;
+
+  --accent:      #FFC53D;
+  --accent-ink:  #1A1230;
+  --accent-soft: rgb(255 197 61 / 0.14);
+  --accent-line: rgb(255 197 61 / 0.38);
+
+  --elixir: #C05BE8;
+
+  /* Result states. Never carried by colour alone — every place these
+     appear is paired with a word (ADVANCED / OUT / BYE). */
+  --win:       #3FD07A;
+  --win-soft:  rgb(63 208 122 / 0.13);
+  --win-line:  rgb(63 208 122 / 0.34);
+  --out:       #F2637A;
+  --out-soft:  rgb(242 99 122 / 0.11);
+  --out-line:  rgb(242 99 122 / 0.30);
+
+  --f-display: var(--font-lilita), ui-sans-serif, system-ui, sans-serif;
+  --f-body:    var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
+
+  --stage-image:
+    radial-gradient(110% 68% at 50% -8%, rgb(192 91 232 / 0.20), transparent 60%),
+    radial-gradient(90% 50% at 50% 104%, rgb(255 197 61 / 0.10), transparent 65%),
+    repeating-linear-gradient(45deg, rgb(160 180 255 / 0.030) 0 2px, transparent 2px 22px);
+}
+
+@theme inline {
+  --color-ground:      var(--ground);
+  --color-surface:     var(--surface);
+  --color-surface-2:   var(--surface-2);
+  --color-line:        var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg:          var(--fg);
+  --color-fg-muted:    var(--fg-muted);
+  --color-fg-subtle:   var(--fg-subtle);
+  --color-accent:      var(--accent);
+  --color-accent-ink:  var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-line: var(--accent-line);
+  --color-elixir:      var(--elixir);
+  --color-win:         var(--win);
+  --color-out:         var(--out);
+
+  --font-display: var(--f-display);
+  --font-body:    var(--f-body);
+}
+
+body {
+  background: var(--ground);
+  color: var(--fg);
+  font-family: var(--f-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The themed atmosphere, on whichever section owns the page background. */
+.stage {
+  background-color: var(--ground);
+  background-image: var(--stage-image);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* Projector mode (?display=1) scales the whole bracket up from one place
+   rather than duplicating every size class with a modifier. */
+.display-mode {
+  --card-w: 15rem;
+  font-size: 1.25rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
