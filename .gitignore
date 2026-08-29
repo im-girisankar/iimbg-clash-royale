@@ -6,3 +6,6 @@ out
 *.tsbuildinfo
 .DS_Store
 .vercel
+
+.vercel
+.env*
