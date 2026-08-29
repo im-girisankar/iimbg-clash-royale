@@ -2,7 +2,6 @@ import Image from "next/image";
 import { Broadcast, Hourglass, Sword, Trophy } from "@phosphor-icons/react/dist/ssr";
 import { loadLive } from "@/lib/tournament";
 import { BracketView, RoundList, MatchHistory } from "@/components/bracket";
-import { Share } from "@/components/share";
 import { AutoRefresh } from "@/components/auto-refresh";
 import type { Bracket, Tournament } from "@/lib/types";
 
@@ -39,13 +38,7 @@ function Marks({ size }: { size: number }) {
   );
 }
 
-export async function LiveView({
-  projector = false,
-  url,
-}: {
-  projector?: boolean;
-  url?: string;
-}) {
+export async function LiveView({ projector = false }: { projector?: boolean }) {
   const live = await loadLive();
 
   if (!live) {
@@ -162,7 +155,6 @@ export async function LiveView({
           </>
         )}
 
-        {!projector && url && <Share url={url} />}
         {!projector && <Credit />}
         <AutoRefresh />
       </div>
@@ -291,14 +283,4 @@ function Credit() {
       </a>
     </p>
   );
-}
-
-/** Read from the environment rather than the request, so the page stays
- *  static. Vercel exposes the production URL at build time. */
-export function siteUrl(): string {
-  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
-  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
-    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
-  }
-  return "http://localhost:3000";
 }

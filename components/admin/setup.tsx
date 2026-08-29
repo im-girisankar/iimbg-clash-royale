@@ -9,6 +9,7 @@ import {
   addPlayersAction,
   removePlayerAction,
   renamePlayerAction,
+  renameTournamentAction,
   randomizeAction,
   startTournamentAction,
   type ActionState,
@@ -19,15 +20,81 @@ import {
  * thirty players one form at a time is a chore nobody should do, so the
  * paste box is the primary path here, not a fallback.
  */
+/** The name goes on the projector in very large letters, so it is worth
+ *  being able to fix a typo without deleting the tournament. Editable only
+ *  during setup: once the draw is locked, the name is on people's phones. */
+function TournamentName({ tournament }: { tournament: Live["tournament"] }) {
+  const [state, action, pending] = useActionState<ActionState, FormData>(
+    renameTournamentAction,
+    null,
+  );
+  const [editing, setEditing] = useState(false);
+  const [lastState, setLastState] = useState(state);
+  if (state !== lastState) {
+    setLastState(state);
+    if (state?.ok) setEditing(false);
+  }
+
+  if (!editing) {
+    return (
+      <div className="flex items-start gap-2">
+        <div className="min-w-0 flex-1">
+          <h1 className="titled truncate text-xl uppercase text-accent">
+            {tournament.name}
+          </h1>
+          <p className="text-sm text-fg-muted">Add players, then make the draw.</p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setEditing(true)}
+          className="btn-plain h-11 shrink-0 px-3 text-sm text-fg-muted"
+        >
+          Rename
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form action={action} className="flex flex-col gap-2">
+      <input type="hidden" name="tournamentId" value={tournament.id} />
+      <label className="flex flex-col gap-1">
+        <span className="text-xs font-semibold text-fg-muted">Tournament name</span>
+        <input
+          name="name"
+          defaultValue={tournament.name}
+          autoFocus
+          required
+          className="cell h-12 px-3 text-sm text-fg focus:border-accent-line"
+        />
+      </label>
+      <div className="flex gap-2">
+        <button type="submit" disabled={pending} className="btn-gold h-11 flex-1 text-sm">
+          {pending ? "Saving…" : "Save name"}
+        </button>
+        <button
+          type="button"
+          onClick={() => setEditing(false)}
+          className="btn-plain h-11 px-4 text-sm text-fg-muted"
+        >
+          Cancel
+        </button>
+      </div>
+      {state?.error && (
+        <p role="alert" className="text-xs text-out">
+          {state.error}
+        </p>
+      )}
+    </form>
+  );
+}
+
 export function Setup({ live }: { live: Live }) {
   const { tournament, players } = live;
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="titled text-xl uppercase text-accent">{tournament.name}</h1>
-        <p className="text-sm text-fg-muted">Add players, then make the draw.</p>
-      </div>
+      <TournamentName tournament={tournament} />
 
       <PasteBox tournamentId={tournament.id} />
 
@@ -70,7 +137,14 @@ function PasteBox({ tournamentId }: { tournamentId: string }) {
     <form action={action} className="flex flex-col gap-2">
       <input type="hidden" name="tournamentId" value={tournamentId} />
       <label className="flex flex-col gap-1">
-        <span className="text-xs font-semibold text-fg-muted">Add players, one name per line</span>
+        <span className="text-xs font-semibold text-fg-muted">
+          Add players, one per line
+        </span>
+        <span className="text-[11px] leading-snug text-fg-subtle">
+          Name on its own is fine. Add a roll number and a Clash Royale tag after
+          commas if you have them, and a column pasted straight out of the
+          registration sheet works as is.
+        </span>
         <textarea
           name="names"
           value={text}
@@ -83,7 +157,7 @@ function PasteBox({ tournamentId }: { tournamentId: string }) {
 
       <div className="flex items-center justify-between text-xs text-fg-muted">
         <span>
-          {count} name{count === 1 ? "" : "s"}
+          {count} player{count === 1 ? "" : "s"}
         </span>
         {state?.ok && <span className="text-win">{state.ok}</span>}
       </div>
@@ -171,11 +245,20 @@ function PlayerRow({ tournamentId, player }: { tournamentId: string; player: Pla
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center gap-2 cell p-2">
-        <span className="flex-1 text-sm text-fg">{player.name}</span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-sm text-fg">{player.name}</span>
+          {(player.regNo || player.gameTag) && (
+            <span className="block truncate text-[11px] text-fg-subtle">
+              {[player.regNo, player.gameTag && `#${player.gameTag}`]
+                .filter(Boolean)
+                .join(" · ")}
+            </span>
+          )}
+        </span>
         <button
           type="button"
           onClick={() => setRenaming(true)}
-          className="h-11 rounded-cell border border-line px-3 text-sm text-fg-muted hover:text-fg"
+          className="btn-plain h-11 shrink-0 px-3 text-sm text-fg-muted"
         >
           Rename
         </button>
@@ -185,10 +268,9 @@ function PlayerRow({ tournamentId, player }: { tournamentId: string; player: Pla
           <button
             type="submit"
             disabled={removePending}
-            className="h-11 rounded-cell border px-3 text-sm font-semibold disabled:opacity-60"
-            style={{ borderColor: "var(--out-line)" }}
+            className="btn-plain h-11 shrink-0 px-3 text-sm text-out disabled:opacity-60"
           >
-            <span className="text-out">{removePending ? "…" : "Remove"}</span>
+            {removePending ? "…" : "Remove"}
           </button>
         </form>
       </div>

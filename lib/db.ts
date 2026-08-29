@@ -52,6 +52,8 @@ interface PlayerRow {
   id: string;
   tournament_id: string;
   name: string;
+  reg_no: string | null;
+  game_tag: string | null;
   seed: number | null;
 }
 
@@ -84,6 +86,8 @@ function toPlayer(row: PlayerRow): Player {
     id: row.id,
     tournamentId: row.tournament_id,
     name: row.name,
+    regNo: row.reg_no,
+    gameTag: row.game_tag,
     seed: row.seed,
   };
 }
@@ -152,14 +156,38 @@ export async function createTournament(name: string, createdBy: string): Promise
   return data.id;
 }
 
-export async function addPlayers(tournamentId: string, names: string[]): Promise<number> {
+export interface NewPlayer {
+  name: string;
+  regNo: string | null;
+  gameTag: string | null;
+}
+
+export async function addPlayers(
+  tournamentId: string,
+  people: NewPlayer[]
+): Promise<number> {
+  // Dedupe within the paste itself by roll number where there is one, by name
+  // otherwise. Two different students genuinely can share a name, so the roll
+  // number has to win when it is present.
   const seen = new Set<string>();
-  const rows: { tournament_id: string; name: string }[] = [];
-  for (const raw of names) {
-    const name = raw.trim();
-    if (!name || seen.has(name)) continue;
-    seen.add(name);
-    rows.push({ tournament_id: tournamentId, name });
+  const rows: {
+    tournament_id: string;
+    name: string;
+    reg_no: string | null;
+    game_tag: string | null;
+  }[] = [];
+  for (const raw of people) {
+    const name = raw.name.trim();
+    if (!name) continue;
+    const key = raw.regNo ? `r:${raw.regNo.toLowerCase()}` : `n:${name.toLowerCase()}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    rows.push({
+      tournament_id: tournamentId,
+      name,
+      reg_no: raw.regNo?.trim() || null,
+      game_tag: raw.gameTag?.trim() || null,
+    });
   }
   if (rows.length === 0) return 0;
 
@@ -168,12 +196,23 @@ export async function addPlayers(tournamentId: string, names: string[]): Promise
   // would need an onConflict target and could still race on partial dupes).
   const { data: existing, error: existingError } = await sb()
     .from("players")
-    .select("name")
+    .select("name, reg_no")
     .eq("tournament_id", tournamentId);
   if (existingError) fail("players", "select", existingError);
-  const existingNames = new Set((existing ?? []).map((r: { name: string }) => r.name));
+  const takenNames = new Set(
+    (existing ?? []).map((r: { name: string }) => r.name.toLowerCase()),
+  );
+  const takenRegs = new Set(
+    (existing ?? [])
+      .map((r: { reg_no: string | null }) => r.reg_no?.toLowerCase())
+      .filter(Boolean),
+  );
 
-  const toInsert = rows.filter((r) => !existingNames.has(r.name));
+  const toInsert = rows.filter((r) =>
+    r.reg_no
+      ? !takenRegs.has(r.reg_no.toLowerCase())
+      : !takenNames.has(r.name.toLowerCase()),
+  );
   if (toInsert.length === 0) return 0;
 
   const { error } = await sb().from("players").insert(toInsert);
@@ -188,6 +227,17 @@ export async function removePlayer(tournamentId: string, playerId: string): Prom
     .eq("tournament_id", tournamentId)
     .eq("id", playerId);
   if (error) fail("players", "delete", error);
+}
+
+export async function renameTournament(
+  tournamentId: string,
+  name: string
+): Promise<void> {
+  const { error } = await sb()
+    .from("tournaments")
+    .update({ name })
+    .eq("id", tournamentId);
+  if (error) fail("tournaments", "update (name)", error);
 }
 
 export async function renamePlayer(

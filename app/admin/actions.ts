@@ -8,6 +8,7 @@ import {
   listResults,
   createTournament,
   addPlayers,
+  renameTournament,
   removePlayer,
   renamePlayer,
   saveDraw,
@@ -17,6 +18,7 @@ import {
   resetTournament,
 } from "@/lib/db";
 import { bracketSize, drawSeeds, resolveBracket, downstreamPath } from "@/lib/bracket";
+import { parseRoster } from "@/lib/roster";
 
 export type ActionState = { ok?: string; error?: string } | null;
 
@@ -75,13 +77,30 @@ export async function addPlayersAction(
   const tournamentId = str(form, "tournamentId");
   if (!tournamentId) return { error: "No tournament selected." };
 
-  const names = str(form, "names").split("\n");
-  const added = await addPlayers(tournamentId, names);
+  const added = await addPlayers(tournamentId, parseRoster(str(form, "names")));
   revalidateAll();
   if (added === 0) {
-    return { error: "No new players added — names were blank or already on the list." };
+    return {
+      error: "Nobody new was added. Those lines were blank or already on the list.",
+    };
   }
   return { ok: `Added ${added} player${added === 1 ? "" : "s"}.` };
+}
+
+export async function renameTournamentAction(
+  prev: ActionState,
+  form: FormData
+): Promise<ActionState> {
+  await requireAdmin();
+
+  const tournamentId = str(form, "tournamentId");
+  const name = str(form, "name").trim();
+  if (!tournamentId) return { error: "No tournament selected." };
+  if (!name) return { error: "The tournament needs a name." };
+
+  await renameTournament(tournamentId, name);
+  revalidateAll();
+  return { ok: "Renamed." };
 }
 
 export async function removePlayerAction(

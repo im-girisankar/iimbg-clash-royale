@@ -37,6 +37,8 @@ function makePlayers(n: number, seeds: Record<string, number>): Player[] {
       id,
       tournamentId: "t1",
       name: `Player ${i}`,
+      regNo: null,
+      gameTag: null,
       seed: id in seeds ? seeds[id] : null,
     };
   });

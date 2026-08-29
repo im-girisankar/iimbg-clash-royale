@@ -22,6 +22,11 @@ export interface Player {
   id: string;
   tournamentId: string;
   name: string;
+  /** Roll number. Unique within a tournament where present, and the only
+   *  reliable way to tell two students with the same name apart. */
+  regNo: string | null;
+  /** Clash Royale player tag, for finding someone in-game. */
+  gameTag: string | null;
   /** 0-based bracket slot, null until the draw is made. */
   seed: number | null;
 }
