@@ -1,4 +1,5 @@
 "use client";
+import { Check } from "@phosphor-icons/react";
 
 import { useActionState, useState } from "react";
 import type { BracketMatch, Player } from "@/lib/types";
@@ -38,12 +39,12 @@ export function ResultEntry({
     const loserCrowns = winner.id === a.id ? crownsB : crownsA;
     outcome =
       winnerCrowns !== null && loserCrowns !== null
-        ? `${winner.name} wins ${winnerCrowns}–${loserCrowns}`
+        ? `${winner.name} wins ${winnerCrowns}-${loserCrowns}`
         : `${winner.name} wins`;
   }
 
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-4">
+    <div className="flex flex-col gap-3 rounded-panel border border-line bg-surface p-4">
       <p className="text-xs font-semibold uppercase tracking-wide text-fg-muted">
         {match.roundName}
       </p>
@@ -58,7 +59,7 @@ export function ResultEntry({
 
       <p
         role="status"
-        className="rounded-lg border border-line bg-ground px-3 py-3 text-center text-sm font-semibold text-fg"
+        className="rounded-cell border border-line bg-ground px-3 py-3 text-center text-sm font-semibold text-fg"
       >
         {outcome}
       </p>
@@ -80,7 +81,7 @@ export function ResultEntry({
         <button
           type="submit"
           disabled={pending || !winner}
-          className="h-14 rounded-lg text-base font-bold disabled:opacity-60"
+          className="h-14 rounded-cell text-base font-bold disabled:opacity-60"
           style={{ background: "var(--accent)", color: "var(--accent-ink)" }}
         >
           {pending ? "Saving…" : "Save result"}
@@ -105,14 +106,14 @@ function PlayerButton({
       type="button"
       onClick={onTap}
       aria-pressed={selected}
-      className="min-h-20 rounded-lg border-2 px-4 text-lg font-bold text-fg transition-colors"
+      className="min-h-20 rounded-cell border-2 px-4 text-lg font-bold text-fg transition-colors"
       style={
         selected
           ? { borderColor: "var(--win)", background: "var(--win-soft)" }
           : { borderColor: "var(--line)", background: "var(--ground)" }
       }
     >
-      {selected ? "✓ " : ""}
+      {selected && <Check size={18} weight="bold" className="mr-1.5 inline-block" />}
       {player.name}
     </button>
   );
@@ -140,7 +141,7 @@ function CrownRow({
             role="radio"
             aria-checked={on}
             onClick={() => onChange(on ? null : n)}
-            className="h-11 flex-1 rounded-md border text-sm font-bold tabular-nums"
+            className="h-11 flex-1 rounded-cell border text-sm font-bold tabular-nums"
             style={
               on
                 ? { background: "var(--accent)", color: "var(--accent-ink)", borderColor: "var(--accent)" }

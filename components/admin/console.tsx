@@ -1,4 +1,5 @@
 "use client";
+import { Crown } from "@phosphor-icons/react";
 
 import { useActionState } from "react";
 import type { Live } from "@/lib/tournament";
@@ -25,11 +26,14 @@ export function Console({ live }: { live: Live }) {
 
       {bracket.champion && (
         <section
-          className="flex flex-col items-center gap-1 rounded-lg border p-6 text-center"
+          className="flex flex-col items-center gap-1 rounded-panel border p-6 text-center"
           style={{ borderColor: "var(--accent-line)", background: "var(--accent-soft)" }}
         >
           <p className="text-xs font-semibold uppercase tracking-wide text-fg-muted">Champion</p>
-          <p className="font-display text-2xl font-bold text-fg">🏆 {bracket.champion.name}</p>
+          <p className="flex items-center gap-2 font-display text-2xl uppercase text-accent">
+            <Crown size={26} weight="fill" />
+            {bracket.champion.name}
+          </p>
         </section>
       )}
 
@@ -43,7 +47,7 @@ export function Console({ live }: { live: Live }) {
       )}
 
       {bracket.nextMatches.length === 0 && !bracket.champion && (
-        <p className="text-sm text-fg-muted">No matches ready — waiting on earlier results.</p>
+        <p className="text-sm text-fg-muted">No matches ready. Waiting on earlier results.</p>
       )}
 
       <DecidedRounds tournamentId={tournament.id} rounds={bracket.rounds} />
@@ -86,10 +90,10 @@ function DecidedRounds({
 function DecidedMatch({ tournamentId, match }: { tournamentId: string; match: BracketMatch }) {
   const [state, action, pending] = useActionState<ActionState, FormData>(undoResultAction, null);
   const score =
-    match.crownsA !== null && match.crownsB !== null ? ` ${match.crownsA}–${match.crownsB}` : "";
+    match.crownsA !== null && match.crownsB !== null ? ` ${match.crownsA}-${match.crownsB}` : "";
 
   return (
-    <div className="rounded-lg border border-line bg-surface p-3">
+    <div className="rounded-cell border border-line bg-surface p-3">
       <p className="text-sm text-fg">
         <span className="font-semibold text-win">{match.winner?.name}</span> beat{" "}
         {match.loser?.name}
@@ -99,7 +103,7 @@ function DecidedMatch({ tournamentId, match }: { tournamentId: string; match: Br
         <summary className="cursor-pointer text-xs text-fg-subtle">Undo…</summary>
         <div className="mt-2 flex flex-col gap-2">
           <p className="text-xs text-out">
-            This clears this result — and anything decided later on this path.
+            This clears this result, and anything decided later on this path.
           </p>
           <form action={action}>
             <input type="hidden" name="tournamentId" value={tournamentId} />
@@ -108,7 +112,7 @@ function DecidedMatch({ tournamentId, match }: { tournamentId: string; match: Br
             <button
               type="submit"
               disabled={pending}
-              className="h-11 rounded-md border px-3 text-sm font-semibold disabled:opacity-60"
+              className="h-11 rounded-cell border px-3 text-sm font-semibold disabled:opacity-60"
               style={{ borderColor: "var(--out-line)" }}
             >
               <span className="text-out">{pending ? "Undoing…" : "Undo this result"}</span>
@@ -132,7 +136,7 @@ function ResetPanel({ tournamentId }: { tournamentId: string }) {
   );
 
   return (
-    <details className="rounded-lg border border-line bg-surface p-3">
+    <details className="rounded-panel border border-line bg-surface p-3">
       <summary className="cursor-pointer text-sm text-fg-subtle">Reset tournament…</summary>
       <div className="mt-3 flex flex-col gap-2">
         <p className="text-xs text-out">
@@ -144,7 +148,7 @@ function ResetPanel({ tournamentId }: { tournamentId: string }) {
           <button
             type="submit"
             disabled={pending}
-            className="h-12 w-full rounded-lg border text-sm font-semibold disabled:opacity-60"
+            className="h-12 w-full rounded-cell border text-sm font-semibold disabled:opacity-60"
             style={{ borderColor: "var(--out-line)" }}
           >
             <span className="text-out">{pending ? "Resetting…" : "Reset tournament"}</span>

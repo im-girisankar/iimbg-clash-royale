@@ -1,4 +1,5 @@
 "use client";
+import { Flag, Shuffle } from "@phosphor-icons/react";
 
 import { useActionState, useState } from "react";
 import { bracketSize } from "@/lib/bracket";
@@ -25,7 +26,7 @@ export function Setup({ live }: { live: Live }) {
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="font-display text-xl font-bold text-fg">{tournament.name}</h1>
-        <p className="text-sm text-fg-muted">Setup — add players, then make the draw.</p>
+        <p className="text-sm text-fg-muted">Add players, then make the draw.</p>
       </div>
 
       <PasteBox tournamentId={tournament.id} />
@@ -69,14 +70,14 @@ function PasteBox({ tournamentId }: { tournamentId: string }) {
     <form action={action} className="flex flex-col gap-2">
       <input type="hidden" name="tournamentId" value={tournamentId} />
       <label className="flex flex-col gap-1">
-        <span className="text-xs font-semibold text-fg-muted">Add players — one name per line</span>
+        <span className="text-xs font-semibold text-fg-muted">Add players, one name per line</span>
         <textarea
           name="names"
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={8}
           placeholder={"Ananya\nRahul\nPriya\n…"}
-          className="rounded-lg border border-line bg-surface px-3 py-2 text-sm text-fg placeholder:text-fg-subtle hover:border-line-strong focus:border-accent-line"
+          className="rounded-cell border border-line bg-surface px-3 py-2 text-sm text-fg placeholder:text-fg-subtle hover:border-line-strong focus:border-accent-line"
         />
       </label>
 
@@ -96,7 +97,7 @@ function PasteBox({ tournamentId }: { tournamentId: string }) {
       <button
         type="submit"
         disabled={pending || count === 0}
-        className="h-12 rounded-lg text-sm font-semibold disabled:opacity-60"
+        className="h-12 rounded-cell text-sm font-semibold disabled:opacity-60"
         style={{ background: "var(--accent)", color: "var(--accent-ink)" }}
       >
         {pending ? "Adding…" : "Add players"}
@@ -129,7 +130,7 @@ function PlayerRow({ tournamentId, player }: { tournamentId: string; player: Pla
     return (
       <form
         action={renameAction}
-        className="flex flex-col gap-2 rounded-lg border border-line bg-surface p-2"
+        className="flex flex-col gap-2 rounded-cell border border-line bg-surface p-2"
       >
         <input type="hidden" name="tournamentId" value={tournamentId} />
         <input type="hidden" name="playerId" value={player.id} />
@@ -139,12 +140,12 @@ function PlayerRow({ tournamentId, player }: { tournamentId: string; player: Pla
             value={name}
             onChange={(e) => setName(e.target.value)}
             autoFocus
-            className="h-11 flex-1 rounded-md border border-line bg-ground px-3 text-sm text-fg focus:border-accent-line"
+            className="h-11 flex-1 rounded-cell border border-line bg-ground px-3 text-sm text-fg focus:border-accent-line"
           />
           <button
             type="submit"
             disabled={renamePending}
-            className="h-11 rounded-md px-3 text-sm font-semibold disabled:opacity-60"
+            className="h-11 rounded-cell px-3 text-sm font-semibold disabled:opacity-60"
             style={{ background: "var(--accent)", color: "var(--accent-ink)" }}
           >
             {renamePending ? "…" : "Save"}
@@ -155,7 +156,7 @@ function PlayerRow({ tournamentId, player }: { tournamentId: string; player: Pla
               setRenaming(false);
               setName(player.name);
             }}
-            className="h-11 rounded-md border border-line px-3 text-sm text-fg-muted"
+            className="h-11 rounded-cell border border-line px-3 text-sm text-fg-muted"
           >
             Cancel
           </button>
@@ -171,12 +172,12 @@ function PlayerRow({ tournamentId, player }: { tournamentId: string; player: Pla
 
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex items-center gap-2 rounded-lg border border-line bg-surface p-2">
+      <div className="flex items-center gap-2 rounded-cell border border-line bg-surface p-2">
         <span className="flex-1 text-sm text-fg">{player.name}</span>
         <button
           type="button"
           onClick={() => setRenaming(true)}
-          className="h-11 rounded-md border border-line px-3 text-sm text-fg-muted hover:text-fg"
+          className="h-11 rounded-cell border border-line px-3 text-sm text-fg-muted hover:text-fg"
         >
           Rename
         </button>
@@ -186,7 +187,7 @@ function PlayerRow({ tournamentId, player }: { tournamentId: string; player: Pla
           <button
             type="submit"
             disabled={removePending}
-            className="h-11 rounded-md border px-3 text-sm font-semibold disabled:opacity-60"
+            className="h-11 rounded-cell border px-3 text-sm font-semibold disabled:opacity-60"
             style={{ borderColor: "var(--out-line)" }}
           >
             <span className="text-out">{removePending ? "…" : "Remove"}</span>
@@ -205,7 +206,7 @@ function PlayerRow({ tournamentId, player }: { tournamentId: string; player: Pla
 function pairText(m: BracketMatch): string {
   if (m.state === "bye") {
     const present = m.a ?? m.b;
-    return `${present?.name ?? "?"} — bye`;
+    return `${present?.name ?? "?"} gets a bye`;
   }
   return `${m.a?.name ?? "?"} vs ${m.b?.name ?? "?"}`;
 }
@@ -220,7 +221,7 @@ function DrawPanel({ live }: { live: Live }) {
   const hasDraw = tournament.size > 0;
 
   return (
-    <section className="flex flex-col gap-3 rounded-lg border border-line bg-surface p-4">
+    <section className="flex flex-col gap-3 rounded-panel border border-line bg-surface p-4">
       <h2 className="font-display text-sm font-bold text-fg">Draw</h2>
       <p className="text-sm text-fg-muted">
         {n === 0
@@ -233,10 +234,13 @@ function DrawPanel({ live }: { live: Live }) {
         <button
           type="submit"
           disabled={pending || n < 2}
-          className="h-12 w-full rounded-lg text-sm font-semibold disabled:opacity-60"
+          className="h-12 w-full rounded-cell text-sm font-semibold disabled:opacity-60"
           style={{ background: "var(--accent)", color: "var(--accent-ink)" }}
         >
-          {pending ? "Drawing…" : hasDraw ? "🎲 Randomize again" : "🎲 Randomize"}
+          <span className="flex items-center justify-center gap-2">
+            <Shuffle size={18} weight="bold" />
+            {pending ? "Drawing…" : hasDraw ? "Randomize again" : "Randomize"}
+          </span>
         </button>
       </form>
       {state?.error && (
@@ -246,8 +250,8 @@ function DrawPanel({ live }: { live: Live }) {
       )}
 
       {hasDraw && bracket.rounds[0] && (
-        <div className="flex flex-col gap-1 rounded-md border border-line bg-ground p-3">
-          <p className="text-xs font-semibold text-fg-muted">First round — sanity check before you start</p>
+        <div className="flex flex-col gap-1 rounded-cell border border-line bg-ground p-3">
+          <p className="text-xs font-semibold text-fg-muted">First round, sanity check before you start</p>
           {bracket.rounds[0].map((m) => (
             <p key={m.slot} className="text-sm text-fg">
               {pairText(m)}
@@ -267,20 +271,23 @@ function StartPanel({ live }: { live: Live }) {
   const n = live.players.length;
 
   return (
-    <section className="flex flex-col gap-2 rounded-lg border border-line bg-surface p-4">
+    <section className="flex flex-col gap-2 rounded-panel border border-line bg-surface p-4">
       <form action={action}>
         <input type="hidden" name="tournamentId" value={live.tournament.id} />
         <button
           type="submit"
           disabled={pending || n < 2}
-          className="h-14 w-full rounded-lg text-base font-bold disabled:opacity-60"
+          className="h-14 w-full rounded-cell text-base font-bold disabled:opacity-60"
           style={{ background: "var(--accent)", color: "var(--accent-ink)" }}
         >
-          {pending ? "Starting…" : "🚀 Start tournament"}
+          <span className="flex items-center justify-center gap-2">
+            <Flag size={20} weight="fill" />
+            {pending ? "Starting…" : "Start tournament"}
+          </span>
         </button>
       </form>
       <p className="text-xs text-fg-muted">
-        Starting locks the draw — you won&rsquo;t be able to add, remove, or reshuffle players
+        Starting locks the draw. You won&rsquo;t be able to add, remove, or reshuffle players
         afterward.
       </p>
       {state?.error && (

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 import { signIn } from "@/auth";
 import { currentAdmin } from "@/lib/session";
@@ -16,8 +17,11 @@ export default async function LoginPage({
 
   return (
     <div className="mx-auto flex max-w-sm flex-col gap-5 py-12">
-      <div className="flex flex-col gap-1.5">
-        <h1 className="font-display text-2xl font-bold text-fg">Scorer sign-in</h1>
+      <div className="flex flex-col items-start gap-3">
+        <Image src="/it-committee.png" alt="" width={56} height={56} priority />
+        <h1 className="font-display text-2xl uppercase tracking-wide text-fg">
+          Scorer sign-in
+        </h1>
         <p className="text-sm text-fg-muted">
           Use the Google account whose address is on the committee&rsquo;s admin list.
         </p>
@@ -26,7 +30,7 @@ export default async function LoginPage({
       {error && (
         <p
           role="alert"
-          className="rounded-lg border px-3 py-2.5 text-sm"
+          className="rounded-cell border px-3 py-2.5 text-sm"
           style={{
             borderColor: "var(--accent-line)",
             background: "var(--accent-soft)",
@@ -47,7 +51,7 @@ export default async function LoginPage({
       >
         <button
           type="submit"
-          className="h-11 w-full rounded-lg font-semibold"
+          className="h-11 w-full rounded-cell font-semibold"
           style={{ background: "var(--accent)", color: "var(--accent-ink)" }}
         >
           Continue with Google

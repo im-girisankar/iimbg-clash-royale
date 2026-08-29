@@ -47,11 +47,11 @@ function CreateTournament() {
           required
           autoFocus
           placeholder="e.g. IIMBG Clash Royale Cup"
-          className="h-12 rounded-lg border border-line bg-surface px-3 text-sm text-fg placeholder:text-fg-subtle hover:border-line-strong focus:border-accent-line"
+          className="h-12 rounded-cell border border-line bg-surface px-3 text-sm text-fg placeholder:text-fg-subtle hover:border-line-strong focus:border-accent-line"
         />
         <button
           type="submit"
-          className="h-12 rounded-lg text-sm font-semibold"
+          className="h-12 rounded-cell text-sm font-semibold"
           style={{ background: "var(--accent)", color: "var(--accent-ink)" }}
         >
           Create tournament

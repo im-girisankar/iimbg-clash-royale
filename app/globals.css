@@ -6,45 +6,61 @@
    so there is no light theme to fall back to and every colour is
    stated outright.
 
-   Clash Royale's arena at night — deep blue-violet stone, crown
-   gold, a trace of elixir purple.
+   The two brand colours are sampled from the committee's own
+   marks, not invented. Both logos share the same gold (#F0C030),
+   and the institute's stupa is #303078. That pair also happens
+   to be Clash Royale's arena, which is why nothing here has to
+   choose between looking like the game and looking like IIM BG.
+
+   Every foreground/surface pair below was checked against WCAG
+   AA (4.5:1); the lowest is fg-subtle on surface-2 at 4.64.
    ───────────────────────────────────────────────────────────── */
 
 :root {
   color-scheme: dark;
 
-  --ground:      #0D1030;
-  --surface:     #161A45;
-  --surface-2:   #1E2456;
+  /* Brand, straight off the logos. */
+  --brand-navy: #303078;
+  --brand-gold: #F0C030;
+
+  --ground:      #0A0C22;
+  --surface:     #14183C;
+  --surface-2:   #1D2352;
   --line:        rgb(160 180 255 / 0.13);
-  --line-strong: rgb(160 180 255 / 0.24);
-  --fg:          #F0F2FF;
-  --fg-muted:    #9BA3CE;
-  --fg-subtle:   #6C74A3;
+  --line-strong: rgb(160 180 255 / 0.26);
 
-  --accent:      #FFC53D;
-  --accent-ink:  #1A1230;
-  --accent-soft: rgb(255 197 61 / 0.14);
-  --accent-line: rgb(255 197 61 / 0.38);
+  --fg:          #EEF0FF;
+  --fg-muted:    #A2A9D6;
+  --fg-subtle:   #868DBE;
 
-  --elixir: #C05BE8;
+  --accent:      var(--brand-gold);
+  --accent-ink:  #1A1440;
+  --accent-soft: rgb(240 192 48 / 0.13);
+  --accent-line: rgb(240 192 48 / 0.40);
 
-  /* Result states. Never carried by colour alone — every place these
+  --elixir: #C77DFF;
+
+  /* Result states. Never carried by colour alone: every place these
      appear is paired with a word (ADVANCED / OUT / BYE). */
-  --win:       #3FD07A;
-  --win-soft:  rgb(63 208 122 / 0.13);
-  --win-line:  rgb(63 208 122 / 0.34);
-  --out:       #F2637A;
-  --out-soft:  rgb(242 99 122 / 0.11);
-  --out-line:  rgb(242 99 122 / 0.30);
+  --win:       #4ADE80;
+  --win-soft:  rgb(74 222 128 / 0.13);
+  --win-line:  rgb(74 222 128 / 0.34);
+  --out:       #FF6B85;
+  --out-soft:  rgb(255 107 133 / 0.11);
+  --out-line:  rgb(255 107 133 / 0.30);
 
-  --f-display: var(--font-lilita), ui-sans-serif, system-ui, sans-serif;
-  --f-body:    var(--font-barlow), ui-sans-serif, system-ui, sans-serif;
+  --f-display: var(--font-russo), ui-sans-serif, system-ui, sans-serif;
+  --f-body:    var(--font-chakra), ui-sans-serif, system-ui, sans-serif;
+
+  /* One radius scale, used everywhere: 10px for controls and cells,
+     16px for panels. Nothing else. */
+  --r-cell:  10px;
+  --r-panel: 16px;
 
   --stage-image:
-    radial-gradient(110% 68% at 50% -8%, rgb(192 91 232 / 0.20), transparent 60%),
-    radial-gradient(90% 50% at 50% 104%, rgb(255 197 61 / 0.10), transparent 65%),
-    repeating-linear-gradient(45deg, rgb(160 180 255 / 0.030) 0 2px, transparent 2px 22px);
+    radial-gradient(118% 70% at 50% -10%, rgb(48 48 120 / 0.85), transparent 62%),
+    radial-gradient(80% 44% at 50% 106%, rgb(240 192 48 / 0.09), transparent 66%),
+    repeating-linear-gradient(45deg, rgb(160 180 255 / 0.028) 0 2px, transparent 2px 22px);
 }
 
 @theme inline {
@@ -60,9 +76,17 @@
   --color-accent-ink:  var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
   --color-accent-line: var(--accent-line);
+  --color-navy:        var(--brand-navy);
   --color-elixir:      var(--elixir);
   --color-win:         var(--win);
+  --color-win-soft:    var(--win-soft);
+  --color-win-line:    var(--win-line);
   --color-out:         var(--out);
+  --color-out-soft:    var(--out-soft);
+  --color-out-line:    var(--out-line);
+
+  --radius-cell:  var(--r-cell);
+  --radius-panel: var(--r-panel);
 
   --font-display: var(--f-display);
   --font-body:    var(--f-body);
@@ -75,10 +99,26 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Scores and seed numbers line up in columns only if the digits are
+   the same width. Chakra Petch ships tabular figures; ask for them. */
+.nums {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
 /* The themed atmosphere, on whichever section owns the page background. */
 .stage {
   background-color: var(--ground);
   background-image: var(--stage-image);
+}
+
+/* The navy in the institute mark is close enough to the page ground to
+   disappear against it, so the logo sits on a light chip wherever it is
+   used. Stated once here rather than repeated at each call site. */
+.mark-chip {
+  background: rgb(255 255 255 / 0.94);
+  border-radius: 50%;
+  padding: 0.3em;
 }
 
 :focus-visible {
@@ -87,13 +127,46 @@ body {
   border-radius: 3px;
 }
 
-/* Projector mode (?display=1) scales the whole bracket up from one place
-   rather than duplicating every size class with a modifier. */
+/* Projector mode scales the whole bracket from one place rather than
+   duplicating every size class with a modifier.
+
+   The scale is a compromise, and it is worth naming: a 16-slot bracket has
+   eight first-round cards, and eight cards plus a masthead have to fit in
+   1080px of height without scrolling, because nobody walks up to a
+   projector to scroll it. 1.15rem is the largest base size that still
+   fits; the header is pulled in tighter below to buy the rows their
+   space back. */
 .display-mode {
-  --card-w: 15rem;
-  font-size: 1.25rem;
+  --card-w: 17rem;
+  font-size: 1.15rem;
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
 }
 
+.display-mode .masthead {
+  gap: 0.5rem;
+}
+
+.display-mode .masthead h1 {
+  font-size: 2.25rem;
+}
+
+.display-mode .bracket-scroll {
+  overflow-x: visible;
+}
+
+/* A four-round bracket does not span a 1920px screen, and left-packing it
+   dumps every spare pixel in one heap on the right. Centred, the same
+   leftover space reads as margin. */
+.display-mode .bracket-columns {
+  justify-content: center;
+  width: 100%;
+}
+
+/* Motion is deliberately minimal. The public page re-renders itself every
+   ten seconds, so any entrance animation would replay every ten seconds
+   for the whole evening on a screen nobody can look away from. Movement
+   is reserved for things a person just did with their thumb. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
