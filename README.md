@@ -1,8 +1,8 @@
 # IIMBG Clash Royale
 
 Live single-elimination bracket for the IIM Bodh Gaya IT Committee Clash Royale
-championship. Admins run the tournament from a phone; everyone else opens a link
-or scans the QR on the projector and watches it fill in.
+championship. Admins run the tournament from a phone; everyone else opens the
+link and watches it fill in.
 
 - **Public** — `/` the bracket, the next match, the champion. `/display` for
   the hall screen.
@@ -30,7 +30,9 @@ service key.
 ## Setup
 
 1. **Supabase project** — create one, then open the SQL editor and run
-   `supabase/schema.sql`.
+   `supabase/schema.sql`, then `supabase/migration-002-player-ids.sql`.
+   PostgREST cannot run DDL, so this is the one step that has to happen in
+   the browser.
 
    It drops the tables from the earlier point-table format. `admins` is not
    dropped, so an existing scorer list survives.
