@@ -2,10 +2,10 @@ import "server-only";
 import { cache } from "react";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
-import { isAdmin } from "./db";
+import { adminExists } from "./db";
 
 export interface Admin {
-  email: string;
+  username: string;
   name: string;
 }
 
@@ -19,17 +19,17 @@ export interface Admin {
  */
 export const requireAdmin = cache(async (): Promise<Admin> => {
   const session = await auth();
-  const email = session?.user?.email?.toLowerCase();
+  const username = session?.user?.id?.toLowerCase();
 
-  if (!email || !(await isAdmin(email))) redirect("/admin/login");
+  if (!username || !(await adminExists(username))) redirect("/admin/login");
 
-  return { email, name: session?.user?.name ?? email };
+  return { username, name: session?.user?.name ?? username };
 });
 
 /** Non-redirecting variant, for deciding what the chrome should show. */
 export const currentAdmin = cache(async (): Promise<Admin | null> => {
   const session = await auth();
-  const email = session?.user?.email?.toLowerCase();
-  if (!email || !(await isAdmin(email))) return null;
-  return { email, name: session?.user?.name ?? email };
+  const username = session?.user?.id?.toLowerCase();
+  if (!username || !(await adminExists(username))) return null;
+  return { username, name: session?.user?.name ?? username };
 });

@@ -105,11 +105,36 @@ function toResult(row: ResultRow): MatchResult {
   };
 }
 
-export async function isAdmin(email: string): Promise<boolean> {
+export interface AdminRecord {
+  username: string;
+  name: string | null;
+  passwordHash: string;
+}
+
+/** Looks up one admin by username. Returns null when there is no such row,
+ *  which the caller must treat identically to a wrong password. */
+export async function findAdmin(username: string): Promise<AdminRecord | null> {
   const { data, error } = await sb()
     .from("admins")
-    .select("email")
-    .eq("email", email.toLowerCase())
+    .select("username, name, password_hash")
+    .eq("username", username.toLowerCase())
+    .maybeSingle();
+  if (error) fail("admins", "select", error);
+  if (!data) return null;
+  return {
+    username: data.username,
+    name: data.name,
+    passwordHash: data.password_hash,
+  };
+}
+
+/** Membership check for a session that already exists. Re-read on every
+ *  request, so deleting the row logs that person out on their next click. */
+export async function adminExists(username: string): Promise<boolean> {
+  const { data, error } = await sb()
+    .from("admins")
+    .select("username")
+    .eq("username", username.toLowerCase())
     .maybeSingle();
   if (error) fail("admins", "select", error);
   return data !== null;

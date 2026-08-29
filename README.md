@@ -6,7 +6,7 @@ link and watches it fill in.
 
 - **Public** — `/` the bracket, the next match, the champion. `/display` for
   the hall screen.
-- **Host** — `/admin`, Google sign-in restricted to rows in the `admins` table.
+- **Host** — `/admin`, username and password checked against the `admins` table.
 
 ## How it works
 
@@ -37,15 +37,22 @@ service key.
    It drops the tables from the earlier point-table format. `admins` is not
    dropped, so an existing scorer list survives.
 
-2. **Add yourself as an admin** — in the Supabase table editor, insert a row
-   into `admins`:
+2. **Create the admin login** — the `admins` table stores a username and a
+   scrypt hash, never a plaintext password. Generate a row with:
 
-   | email | name |
-   |---|---|
-   | you@iimbg.ac.in | Your Name |
+   ```
+   node --conditions=react-server -e "import('./lib/password.ts').then(async m => console.log(await m.hashPassword('YOUR-PASSWORD')))"
+   ```
 
-   Sign-in is refused for any Google account not in this table. Adding a scorer
-   on event night is one row, no deploy.
+   then insert it:
+
+   ```sql
+   insert into admins (username, name, password_hash)
+   values ('admin', 'IT Committee', 'scrypt$...');
+   ```
+
+   Adding a second scorer later is one more row and no code change.
+
 
 3. **Google OAuth** — [console.cloud.google.com](https://console.cloud.google.com)
    → APIs & Services → Credentials → Create OAuth client ID → Web application.

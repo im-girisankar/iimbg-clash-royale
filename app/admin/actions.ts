@@ -63,7 +63,7 @@ export async function createTournamentAction(
   const name = str(form, "name");
   if (!name) return { error: "Give the tournament a name." };
 
-  await createTournament(name, admin.email);
+  await createTournament(name, admin.username);
   revalidateAll();
   return { ok: `Created "${name}".` };
 }
@@ -229,7 +229,7 @@ export async function recordResultAction(
     winnerId,
     crownsA,
     crownsB,
-    decidedBy: admin.email,
+    decidedBy: admin.username,
   });
 
   // Re-resolve with the fresh result to see whether the final just closed.

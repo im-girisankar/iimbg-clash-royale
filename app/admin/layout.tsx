@@ -55,7 +55,7 @@ export default async function AdminLayout({
                 <button
                   type="submit"
                   className="text-xs text-fg-subtle hover:text-fg"
-                  title={admin.email}
+                  title={admin.username}
                 >
                   Sign out
                 </button>
