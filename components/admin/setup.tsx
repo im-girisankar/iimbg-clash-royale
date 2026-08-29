@@ -25,7 +25,7 @@ export function Setup({ live }: { live: Live }) {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="font-display text-xl font-bold text-fg">{tournament.name}</h1>
+        <h1 className="titled text-xl uppercase text-accent">{tournament.name}</h1>
         <p className="text-sm text-fg-muted">Add players, then make the draw.</p>
       </div>
 
@@ -33,7 +33,7 @@ export function Setup({ live }: { live: Live }) {
 
       {players.length > 0 && (
         <section className="flex flex-col gap-2">
-          <h2 className="font-display text-sm font-bold text-fg">Players ({players.length})</h2>
+          <h2 className="titled text-sm uppercase tracking-wide text-accent">Players ({players.length})</h2>
           <div className="flex flex-col gap-2">
             {players.map((p) => (
               <PlayerRow key={p.id} tournamentId={tournament.id} player={p} />
@@ -77,7 +77,7 @@ function PasteBox({ tournamentId }: { tournamentId: string }) {
           onChange={(e) => setText(e.target.value)}
           rows={8}
           placeholder={"Ananya\nRahul\nPriya\n…"}
-          className="rounded-cell border border-line bg-surface px-3 py-2 text-sm text-fg placeholder:text-fg-subtle hover:border-line-strong focus:border-accent-line"
+          className="cell px-3 py-2 text-sm text-fg placeholder:text-fg-subtle hover:border-line-strong focus:border-accent-line"
         />
       </label>
 
@@ -98,7 +98,6 @@ function PasteBox({ tournamentId }: { tournamentId: string }) {
         type="submit"
         disabled={pending || count === 0}
         className="h-12 rounded-cell text-sm font-semibold disabled:opacity-60"
-        style={{ background: "var(--accent)", color: "var(--accent-ink)" }}
       >
         {pending ? "Adding…" : "Add players"}
       </button>
@@ -130,7 +129,7 @@ function PlayerRow({ tournamentId, player }: { tournamentId: string; player: Pla
     return (
       <form
         action={renameAction}
-        className="flex flex-col gap-2 rounded-cell border border-line bg-surface p-2"
+        className="flex flex-col gap-2 cell p-2"
       >
         <input type="hidden" name="tournamentId" value={tournamentId} />
         <input type="hidden" name="playerId" value={player.id} />
@@ -146,7 +145,6 @@ function PlayerRow({ tournamentId, player }: { tournamentId: string; player: Pla
             type="submit"
             disabled={renamePending}
             className="h-11 rounded-cell px-3 text-sm font-semibold disabled:opacity-60"
-            style={{ background: "var(--accent)", color: "var(--accent-ink)" }}
           >
             {renamePending ? "…" : "Save"}
           </button>
@@ -172,7 +170,7 @@ function PlayerRow({ tournamentId, player }: { tournamentId: string; player: Pla
 
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex items-center gap-2 rounded-cell border border-line bg-surface p-2">
+      <div className="flex items-center gap-2 cell p-2">
         <span className="flex-1 text-sm text-fg">{player.name}</span>
         <button
           type="button"
@@ -221,8 +219,8 @@ function DrawPanel({ live }: { live: Live }) {
   const hasDraw = tournament.size > 0;
 
   return (
-    <section className="flex flex-col gap-3 rounded-panel border border-line bg-surface p-4">
-      <h2 className="font-display text-sm font-bold text-fg">Draw</h2>
+    <section className="flex flex-col gap-3 panel p-4">
+      <h2 className="titled text-sm uppercase tracking-wide text-accent">Draw</h2>
       <p className="text-sm text-fg-muted">
         {n === 0
           ? "Add players to see the bracket size."
@@ -234,8 +232,7 @@ function DrawPanel({ live }: { live: Live }) {
         <button
           type="submit"
           disabled={pending || n < 2}
-          className="h-12 w-full rounded-cell text-sm font-semibold disabled:opacity-60"
-          style={{ background: "var(--accent)", color: "var(--accent-ink)" }}
+          className="btn-gold h-12 w-full text-sm disabled:opacity-60"
         >
           <span className="flex items-center justify-center gap-2">
             <Shuffle size={18} weight="bold" />
@@ -271,14 +268,13 @@ function StartPanel({ live }: { live: Live }) {
   const n = live.players.length;
 
   return (
-    <section className="flex flex-col gap-2 rounded-panel border border-line bg-surface p-4">
+    <section className="flex flex-col gap-2 panel p-4">
       <form action={action}>
         <input type="hidden" name="tournamentId" value={live.tournament.id} />
         <button
           type="submit"
           disabled={pending || n < 2}
-          className="h-14 w-full rounded-cell text-base font-bold disabled:opacity-60"
-          style={{ background: "var(--accent)", color: "var(--accent-ink)" }}
+          className="btn-gold h-14 w-full text-base disabled:opacity-60"
         >
           <span className="flex items-center justify-center gap-2">
             <Flag size={20} weight="fill" />

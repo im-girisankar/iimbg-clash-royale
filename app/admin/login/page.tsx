@@ -51,8 +51,7 @@ export default async function LoginPage({
       >
         <button
           type="submit"
-          className="h-11 w-full rounded-cell font-semibold"
-          style={{ background: "var(--accent)", color: "var(--accent-ink)" }}
+          className="btn-gold h-11 w-full"
         >
           Continue with Google
         </button>

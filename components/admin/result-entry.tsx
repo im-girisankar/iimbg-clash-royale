@@ -44,7 +44,7 @@ export function ResultEntry({
   }
 
   return (
-    <div className="flex flex-col gap-3 rounded-panel border border-line bg-surface p-4">
+    <div className="flex flex-col gap-3 panel p-4">
       <p className="text-xs font-semibold uppercase tracking-wide text-fg-muted">
         {match.roundName}
       </p>
@@ -82,7 +82,6 @@ export function ResultEntry({
           type="submit"
           disabled={pending || !winner}
           className="h-14 rounded-cell text-base font-bold disabled:opacity-60"
-          style={{ background: "var(--accent)", color: "var(--accent-ink)" }}
         >
           {pending ? "Saving…" : "Save result"}
         </button>

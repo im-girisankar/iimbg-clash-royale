@@ -1,25 +1,31 @@
 import type { Metadata, Viewport } from "next";
-import { Chakra_Petch, Russo_One } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
-/* Russo One for headings: wide, flat-sided and unmistakably tournament
-   signage, which is what a name has to be when it is read from the back
-   of a hall. Chakra Petch carries everything else. It is narrow enough
-   that a long player name still fits inside a bracket cell, and it has
-   real tabular figures for the crown counts. */
+/* The actual Clash fonts, from Supercell's official Fan Kit
+   (fankit.supercell.com), which licenses them for exactly this kind of
+   non-commercial fan use. Self-hosted through next/font/local so they are
+   preloaded and subset with no layout shift and no third-party request.
 
-const russo = Russo_One({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-russo",
+   Heavy is the signage voice. Regular carries body text: it is the game's
+   own UI face, so the whole thing reads as one product rather than as a
+   web app wearing a game's colours. */
+
+const clash = localFont({
+  src: [
+    { path: "../public/fonts/Clash_Regular.otf", weight: "400", style: "normal" },
+    { path: "../public/fonts/Clash_Bold.otf", weight: "700", style: "normal" },
+  ],
+  variable: "--font-clash",
   display: "swap",
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
 });
 
-const chakra = Chakra_Petch({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-chakra",
+const clashHeavy = localFont({
+  src: "../public/fonts/Clash-Heavy.otf",
+  variable: "--font-clash-heavy",
   display: "swap",
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
 });
 
 export const metadata: Metadata = {
@@ -29,7 +35,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0A0C22",
+  themeColor: "#131A4A",
   colorScheme: "dark",
 };
 
@@ -37,12 +43,12 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${chakra.variable} ${russo.variable} min-h-dvh antialiased`}
-      >
-        {children}
-      </body>
+    /* The font variables go on <html>, not <body>. globals.css derives
+       --f-body and --f-display from them inside :root, and a var() that
+       resolves to nothing there makes the whole font-family declaration
+       invalid, silently dropping the page back to the system stack. */
+    <html lang="en" className={`${clash.variable} ${clashHeavy.variable}`}>
+      <body className="min-h-dvh antialiased">{children}</body>
     </html>
   );
 }

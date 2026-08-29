@@ -18,7 +18,7 @@ export function Console({ live }: { live: Live }) {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <h1 className="font-display text-xl font-bold text-fg">{tournament.name}</h1>
+        <h1 className="titled text-xl uppercase text-accent">{tournament.name}</h1>
         <p className="text-sm text-fg-muted">
           {bracket.played}/{bracket.total} matches decided
         </p>
@@ -39,7 +39,7 @@ export function Console({ live }: { live: Live }) {
 
       {bracket.nextMatches.length > 0 && (
         <section className="flex flex-col gap-3">
-          <h2 className="font-display text-sm font-bold text-fg">Ready to play</h2>
+          <h2 className="titled text-sm uppercase tracking-wide text-accent">Ready to play</h2>
           {bracket.nextMatches.map((m) => (
             <ResultEntry key={`${m.round}-${m.slot}`} tournamentId={tournament.id} match={m} />
           ))}
@@ -72,7 +72,7 @@ function DecidedRounds({
 
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="font-display text-sm font-bold text-fg">Results</h2>
+      <h2 className="titled text-sm uppercase tracking-wide text-accent">Results</h2>
       {decidedRounds.map((round) => (
         <div key={round[0].round} className="flex flex-col gap-2">
           <h3 className="text-xs font-semibold uppercase tracking-wide text-fg-muted">
@@ -93,7 +93,7 @@ function DecidedMatch({ tournamentId, match }: { tournamentId: string; match: Br
     match.crownsA !== null && match.crownsB !== null ? ` ${match.crownsA}-${match.crownsB}` : "";
 
   return (
-    <div className="rounded-cell border border-line bg-surface p-3">
+    <div className="cell p-3">
       <p className="text-sm text-fg">
         <span className="font-semibold text-win">{match.winner?.name}</span> beat{" "}
         {match.loser?.name}
@@ -136,7 +136,7 @@ function ResetPanel({ tournamentId }: { tournamentId: string }) {
   );
 
   return (
-    <details className="rounded-panel border border-line bg-surface p-3">
+    <details className="panel p-3">
       <summary className="cursor-pointer text-sm text-fg-subtle">Reset tournament…</summary>
       <div className="mt-3 flex flex-col gap-2">
         <p className="text-xs text-out">

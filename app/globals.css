@@ -1,70 +1,68 @@
 @import "tailwindcss";
 
 /* ─────────────────────────────────────────────────────────────
-   One game, one palette. The app commits to dark on purpose: it
-   is read in a dim hall and projected on a screen at the front,
-   so there is no light theme to fall back to and every colour is
-   stated outright.
+   Clash Royale's own UI is the reference, not a generic dark
+   dashboard. Three things carry that language and everything
+   below is one of them:
 
-   The two brand colours are sampled from the committee's own
-   marks, not invented. Both logos share the same gold (#F0C030),
-   and the institute's stupa is #303078. That pair also happens
-   to be Clash Royale's arena, which is why nothing here has to
-   choose between looking like the game and looking like IIM BG.
+     1. Nothing is flat. Every panel is a physical object with a
+        lit top edge, a dark bottom edge and a shadow under it.
+     2. Gold trim marks what matters, and only what matters.
+     3. Type is heavy and outlined, because in-game it sits over
+        artwork and still has to read.
 
-   Every foreground/surface pair below was checked against WCAG
-   AA (4.5:1); the lowest is fg-subtle on surface-2 at 4.64.
+   Assets and fonts come from Supercell's official Fan Kit.
    ───────────────────────────────────────────────────────────── */
 
 :root {
   color-scheme: dark;
 
-  /* Brand, straight off the logos. */
+  /* The committee's own two colours, sampled from the logos, and close
+     enough to the arena's blue-and-gold that they carry the theme. */
   --brand-navy: #303078;
   --brand-gold: #F0C030;
 
-  --ground:      #0A0C22;
-  --surface:     #14183C;
-  --surface-2:   #1D2352;
-  --line:        rgb(160 180 255 / 0.13);
-  --line-strong: rgb(160 180 255 / 0.26);
+  --ground:    #101744;
+  --ground-2:  #1B2566;
+  --surface:   #232C6B;
+  --surface-2: #2E3A85;
+  --line:       rgb(150 175 255 / 0.20);
+  --line-strong:rgb(150 175 255 / 0.34);
 
-  --fg:          #EEF0FF;
-  --fg-muted:    #A2A9D6;
-  --fg-subtle:   #868DBE;
+  --fg:        #FFFFFF;
+  --fg-muted:  #B9C4F0;
+  --fg-subtle: #8E9BD6;
 
   --accent:      var(--brand-gold);
-  --accent-ink:  #1A1440;
-  --accent-soft: rgb(240 192 48 / 0.13);
-  --accent-line: rgb(240 192 48 / 0.40);
+  --accent-2:    #FFE07A;
+  --accent-deep: #C1860E;
+  --accent-ink:  #2B1E00;
+  --accent-soft: rgb(240 192 48 / 0.16);
+  --accent-line: rgb(240 192 48 / 0.55);
 
   --elixir: #C77DFF;
 
-  /* Result states. Never carried by colour alone: every place these
-     appear is paired with a word (ADVANCED / OUT / BYE). */
-  --win:       #4ADE80;
-  --win-soft:  rgb(74 222 128 / 0.13);
-  --win-line:  rgb(74 222 128 / 0.34);
-  --out:       #FF6B85;
-  --out-soft:  rgb(255 107 133 / 0.11);
-  --out-line:  rgb(255 107 133 / 0.30);
+  /* Result states, always paired with a word as well as a colour. */
+  --win:       #57E08A;
+  --win-deep:  #1F8A4C;
+  --win-soft:  rgb(87 224 138 / 0.16);
+  --win-line:  rgb(87 224 138 / 0.45);
+  --out:       #FF7A90;
+  --out-deep:  #9E2740;
+  --out-soft:  rgb(255 122 144 / 0.13);
+  --out-line:  rgb(255 122 144 / 0.38);
 
-  --f-display: var(--font-russo), ui-sans-serif, system-ui, sans-serif;
-  --f-body:    var(--font-chakra), ui-sans-serif, system-ui, sans-serif;
+  --f-display: var(--font-clash-heavy), var(--font-clash), ui-sans-serif, sans-serif;
+  --f-body:    var(--font-clash), ui-sans-serif, system-ui, sans-serif;
 
-  /* One radius scale, used everywhere: 10px for controls and cells,
-     16px for panels. Nothing else. */
-  --r-cell:  10px;
-  --r-panel: 16px;
-
-  --stage-image:
-    radial-gradient(118% 70% at 50% -10%, rgb(48 48 120 / 0.85), transparent 62%),
-    radial-gradient(80% 44% at 50% 106%, rgb(240 192 48 / 0.09), transparent 66%),
-    repeating-linear-gradient(45deg, rgb(160 180 255 / 0.028) 0 2px, transparent 2px 22px);
+  /* One radius scale: 12px for controls and cells, 20px for panels. */
+  --r-cell:  12px;
+  --r-panel: 20px;
 }
 
 @theme inline {
   --color-ground:      var(--ground);
+  --color-ground-2:    var(--ground-2);
   --color-surface:     var(--surface);
   --color-surface-2:   var(--surface-2);
   --color-line:        var(--line);
@@ -73,6 +71,8 @@
   --color-fg-muted:    var(--fg-muted);
   --color-fg-subtle:   var(--fg-subtle);
   --color-accent:      var(--accent);
+  --color-accent-2:    var(--accent-2);
+  --color-accent-deep: var(--accent-deep);
   --color-accent-ink:  var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
   --color-accent-line: var(--accent-line);
@@ -90,8 +90,14 @@
 
   --font-display: var(--f-display);
   --font-body:    var(--f-body);
+
+  /* Override Tailwind's own default sans as well, so any element that never
+     asks for a family still gets Clash instead of the system stack. */
+  --font-sans:    var(--f-body);
+  --default-font-family: var(--f-body);
 }
 
+html,
 body {
   background: var(--ground);
   color: var(--fg);
@@ -99,74 +105,188 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Scores and seed numbers line up in columns only if the digits are
-   the same width. Chakra Petch ships tabular figures; ask for them. */
 .nums {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
 
-/* The themed atmosphere, on whichever section owns the page background. */
+/* ── The arena ground ────────────────────────────────────────
+   Real key art from the Fan Kit, held right back. At full
+   strength it competes with the bracket for attention, which is
+   the usual way game art ruins a functional screen; at 0.16 under
+   a blue wash it only says "this is Clash Royale" and then gets
+   out of the way. Fixed so it does not slide around while the
+   page scrolls. */
 .stage {
-  background-color: var(--ground);
-  background-image: var(--stage-image);
+  position: relative;
+  background: linear-gradient(180deg, var(--ground-2) 0%, var(--ground) 55%);
+  isolation: isolate;
 }
 
-/* The navy in the institute mark is close enough to the page ground to
-   disappear against it, so the logo sits on a light chip wherever it is
-   used. Stated once here rather than repeated at each call site. */
+.stage::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: url("/cr/arena-bg.jpg");
+  background-size: cover;
+  background-position: center 22%;
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.stage::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(120% 60% at 50% 0%, rgb(48 48 120 / 0.55), transparent 70%),
+    linear-gradient(180deg, rgb(16 23 68 / 0.55) 0%, rgb(16 23 68 / 0.88) 70%);
+  pointer-events: none;
+}
+
+/* ── Panels: lit top edge, dark bottom edge, shadow underneath ── */
+.panel {
+  background: linear-gradient(180deg, var(--surface-2), var(--surface));
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-panel);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.16),
+    inset 0 -2px 0 rgb(0 0 0 / 0.30),
+    0 4px 0 rgb(0 0 0 / 0.22),
+    0 10px 22px rgb(0 0 0 / 0.30);
+}
+
+.panel-gold {
+  background: linear-gradient(180deg, rgb(240 192 48 / 0.20), rgb(240 192 48 / 0.07));
+  border: 2px solid var(--accent-line);
+  border-radius: var(--r-panel);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.28),
+    inset 0 -2px 0 rgb(0 0 0 / 0.28),
+    0 4px 0 rgb(140 96 6 / 0.55),
+    0 10px 26px rgb(0 0 0 / 0.34);
+}
+
+/* Cells are the same idea one step quieter, for things inside a panel. */
+.cell {
+  background: linear-gradient(180deg, var(--surface-2), var(--surface));
+  border: 1px solid var(--line);
+  border-radius: var(--r-cell);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.10),
+    0 2px 0 rgb(0 0 0 / 0.22);
+}
+
+.cell-win {
+  background: linear-gradient(180deg, rgb(87 224 138 / 0.22), rgb(87 224 138 / 0.09));
+  border: 1px solid var(--win-line);
+  border-radius: var(--r-cell);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.16), 0 2px 0 rgb(12 74 40 / 0.5);
+}
+
+.cell-out {
+  background: linear-gradient(180deg, rgb(255 122 144 / 0.13), rgb(255 122 144 / 0.05));
+  border: 1px solid var(--out-line);
+  border-radius: var(--r-cell);
+}
+
+/* ── Buttons: the chunky in-game kind that push down when tapped ── */
+.btn-gold,
+.btn-plain {
+  border-radius: var(--r-cell);
+  font-family: var(--f-display);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+.btn-gold {
+  background: linear-gradient(180deg, var(--accent-2), var(--accent));
+  color: var(--accent-ink);
+  border: 1px solid var(--accent-2);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.55), 0 4px 0 var(--accent-deep),
+    0 8px 16px rgb(0 0 0 / 0.34);
+}
+
+.btn-plain {
+  background: linear-gradient(180deg, var(--surface-2), var(--surface));
+  color: var(--fg);
+  border: 1px solid var(--line-strong);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.14), 0 4px 0 rgb(0 0 0 / 0.35);
+}
+
+.btn-gold:active:not(:disabled),
+.btn-plain:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3), 0 1px 0 rgb(0 0 0 / 0.35);
+}
+
+.btn-gold:hover:not(:disabled),
+.btn-plain:hover:not(:disabled) {
+  filter: brightness(1.07);
+}
+
+.btn-gold:disabled,
+.btn-plain:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Display type sits over artwork, so it carries its own outline. */
+.titled {
+  font-family: var(--f-display);
+  text-shadow:
+    0 2px 0 rgb(0 0 0 / 0.55),
+    0 0 14px rgb(16 23 68 / 0.8);
+}
+
 .mark-chip {
-  background: rgb(255 255 255 / 0.94);
+  background: rgb(255 255 255 / 0.95);
   border-radius: 50%;
   padding: 0.3em;
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 3px solid var(--accent-2);
   outline-offset: 2px;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
-/* Projector mode scales the whole bracket from one place rather than
-   duplicating every size class with a modifier.
-
-   The scale is a compromise, and it is worth naming: a 16-slot bracket has
-   eight first-round cards, and eight cards plus a masthead have to fit in
-   1080px of height without scrolling, because nobody walks up to a
-   projector to scroll it. 1.15rem is the largest base size that still
-   fits; the header is pulled in tighter below to buy the rows their
-   space back. */
+/* Projector mode. The masthead runs as one row there and the whole draw
+   has to fit 1080px without scrolling, because nobody walks up to a
+   projector to scroll it. */
 .display-mode {
   --card-w: 17rem;
   font-size: 1.15rem;
-  padding-top: 1.25rem;
-  padding-bottom: 1.25rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
-.display-mode .masthead {
-  gap: 0.5rem;
-}
-
-.display-mode .masthead h1 {
-  font-size: 2.25rem;
-}
-
-.display-mode .bracket-scroll {
-  overflow-x: visible;
-}
-
-/* A four-round bracket does not span a 1920px screen, and left-packing it
-   dumps every spare pixel in one heap on the right. Centred, the same
-   leftover space reads as margin. */
 .display-mode .bracket-columns {
   justify-content: center;
   width: 100%;
 }
 
-/* Motion is deliberately minimal. The public page re-renders itself every
-   ten seconds, so any entrance animation would replay every ten seconds
-   for the whole evening on a screen nobody can look away from. Movement
-   is reserved for things a person just did with their thumb. */
+/* Eight first-round cards, each now carrying an emote, have to clear 1080px
+   with the masthead above them. This is the whole budget: 10px of padding
+   per card and 10px between them. Anything looser and the last match falls
+   off the bottom of a screen nobody can scroll. */
+.display-mode .round-col {
+  gap: 0.45rem;
+}
+
+.display-mode .match-card {
+  padding: 0.35rem;
+  gap: 0.25rem;
+}
+
+/* Motion is deliberately small. The public page re-renders itself every
+   ten seconds, so anything that plays on entry would play every ten
+   seconds all evening on a screen nobody can look away from. Movement is
+   reserved for things a person just did with their thumb. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

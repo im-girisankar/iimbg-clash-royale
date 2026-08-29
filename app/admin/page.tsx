@@ -37,7 +37,7 @@ function CreateTournament() {
   return (
     <div className="mx-auto flex max-w-sm flex-col gap-5 py-8">
       <div className="flex flex-col gap-1.5">
-        <h1 className="font-display text-xl font-bold text-fg">New tournament</h1>
+        <h1 className="titled text-xl uppercase text-accent">New tournament</h1>
         <p className="text-sm text-fg-muted">Name it, then add players.</p>
       </div>
 
@@ -47,12 +47,11 @@ function CreateTournament() {
           required
           autoFocus
           placeholder="e.g. IIMBG Clash Royale Cup"
-          className="h-12 rounded-cell border border-line bg-surface px-3 text-sm text-fg placeholder:text-fg-subtle hover:border-line-strong focus:border-accent-line"
+          className="h-12 cell px-3 text-sm text-fg placeholder:text-fg-subtle hover:border-line-strong focus:border-accent-line"
         />
         <button
           type="submit"
-          className="h-12 rounded-cell text-sm font-semibold"
-          style={{ background: "var(--accent)", color: "var(--accent-ink)" }}
+          className="btn-gold h-12 text-sm"
         >
           Create tournament
         </button>
