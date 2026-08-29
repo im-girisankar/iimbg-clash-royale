@@ -88,6 +88,19 @@ Got a result wrong? Undo it on the admin console. Anything decided later on that
 path is cleared too, because those results were downstream of a fact that turned
 out to be false.
 
+## Working on the UI without a database
+
+You do not need Supabase credentials to work on the frontend:
+
+```
+npm install
+DEMO_MODE=1 npm run dev
+```
+
+That renders a fixed 13-player bracket mid-tournament, with byes, finished
+matches, playable matches and undecided ones all on screen at once. It never
+touches the database. Do not set it in production.
+
 ## Commands
 
 ```

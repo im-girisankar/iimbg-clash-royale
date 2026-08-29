@@ -14,6 +14,17 @@ export interface Live {
  *  request (e.g. a layout and a page both wanting the live state) queries
  *  the DB once. */
 export const loadLive = cache(async (): Promise<Live | null> => {
+  /* Frontend work needs a bracket on screen, not a database. DEMO_MODE=1
+     serves a fixture and never touches Supabase, so someone can clone this
+     and have every match state rendering in about a minute.
+
+     Checked before the try/catch on purpose: an explicit opt-in should not
+     be able to be confused with a connection failure. */
+  if (process.env.DEMO_MODE === "1") {
+    const { demoLive } = await import("./demo");
+    return demoLive();
+  }
+
   try {
     const tournament = await getCurrentTournament();
     if (!tournament) return null;
