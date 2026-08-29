@@ -81,7 +81,7 @@ export function ResultEntry({
         <button
           type="submit"
           disabled={pending || !winner}
-          className="h-14 rounded-cell text-base font-bold disabled:opacity-60"
+          className="btn-gold h-14 w-full text-base disabled:opacity-60"
         >
           {pending ? "Saving…" : "Save result"}
         </button>

@@ -150,7 +150,9 @@ function PasteBox({ tournamentId }: { tournamentId: string }) {
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={8}
-          placeholder={"Ananya\nRahul\nPriya\n…"}
+          placeholder={
+            "Rohan Pillai\nAparna Nair, MBA24-118\nKabir Sethi, MBA24-203, #9QRLPUYC"
+          }
           className="cell px-3 py-2 text-sm text-fg placeholder:text-fg-subtle hover:border-line-strong focus:border-accent-line"
         />
       </label>
@@ -171,7 +173,7 @@ function PasteBox({ tournamentId }: { tournamentId: string }) {
       <button
         type="submit"
         disabled={pending || count === 0}
-        className="h-12 rounded-cell text-sm font-semibold disabled:opacity-60"
+        className="btn-gold h-12 w-full text-sm disabled:opacity-60"
       >
         {pending ? "Adding…" : "Add players"}
       </button>
@@ -218,7 +220,7 @@ function PlayerRow({ tournamentId, player }: { tournamentId: string; player: Pla
           <button
             type="submit"
             disabled={renamePending}
-            className="h-11 rounded-cell px-3 text-sm font-semibold disabled:opacity-60"
+            className="btn-gold h-11 shrink-0 px-3 text-sm disabled:opacity-60"
           >
             {renamePending ? "…" : "Save"}
           </button>
@@ -268,7 +270,7 @@ function PlayerRow({ tournamentId, player }: { tournamentId: string; player: Pla
           <button
             type="submit"
             disabled={removePending}
-            className="btn-plain h-11 shrink-0 px-3 text-sm text-out disabled:opacity-60"
+            className="btn-danger h-11 shrink-0 px-3 text-sm"
           >
             {removePending ? "…" : "Remove"}
           </button>
@@ -299,6 +301,12 @@ function DrawPanel({ live }: { live: Live }) {
   const size = n > 0 ? bracketSize(n) : 0;
   const byes = n > 0 ? size - n : 0;
   const hasDraw = tournament.size > 0;
+  const blocked =
+    n === 0
+      ? "Add players above first."
+      : n === 1
+        ? "One player is not a tournament. Add at least one more."
+        : null;
 
   return (
     <section className="flex flex-col gap-3 panel p-4">
@@ -313,7 +321,7 @@ function DrawPanel({ live }: { live: Live }) {
         <input type="hidden" name="tournamentId" value={tournament.id} />
         <button
           type="submit"
-          disabled={pending || n < 2}
+          disabled={pending || blocked !== null}
           className="btn-gold h-12 w-full text-sm disabled:opacity-60"
         >
           <span className="flex items-center justify-center gap-2">
@@ -322,6 +330,10 @@ function DrawPanel({ live }: { live: Live }) {
           </span>
         </button>
       </form>
+      {/* A dimmed button that does not say why reads as broken, and the
+          person tapping it is mid-event with no way to tell the difference.
+          Say what is missing. */}
+      {blocked && <p className="text-xs text-fg-subtle">{blocked}</p>}
       {state?.error && (
         <p role="alert" className="text-xs text-out">
           {state.error}
@@ -348,6 +360,13 @@ function StartPanel({ live }: { live: Live }) {
     null,
   );
   const n = live.players.length;
+  const hasDraw =
+    live.tournament.size > 0 && live.players.every((p) => p.seed !== null);
+
+  /* The action rejects a start with no draw anyway, but finding that out by
+     tapping and reading an error is worse than being told beforehand. */
+  const blocked =
+    n < 2 ? "Add at least two players first." : !hasDraw ? "Randomize the draw first." : null;
 
   return (
     <section className="flex flex-col gap-2 panel p-4">
@@ -355,7 +374,7 @@ function StartPanel({ live }: { live: Live }) {
         <input type="hidden" name="tournamentId" value={live.tournament.id} />
         <button
           type="submit"
-          disabled={pending || n < 2}
+          disabled={pending || blocked !== null}
           className="btn-gold h-14 w-full text-base disabled:opacity-60"
         >
           <span className="flex items-center justify-center gap-2">
@@ -365,8 +384,7 @@ function StartPanel({ live }: { live: Live }) {
         </button>
       </form>
       <p className="text-xs text-fg-muted">
-        Starting locks the draw. You won&rsquo;t be able to add, remove, or reshuffle players
-        afterward.
+        {blocked ?? "Starting locks the draw. You won’t be able to add, remove, or reshuffle players afterward."}
       </p>
       {state?.error && (
         <p role="alert" className="text-xs text-out">

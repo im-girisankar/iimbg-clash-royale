@@ -177,7 +177,7 @@ function DecidedMatch({
             <button
               type="submit"
               disabled={pending}
-              className="btn-plain h-11 px-3 text-sm text-out disabled:opacity-60"
+              className="btn-danger h-11 px-3 text-sm"
             >
               {pending ? "Undoing…" : "Undo this result"}
             </button>
@@ -212,7 +212,7 @@ function ResetPanel({ tournamentId }: { tournamentId: string }) {
           <button
             type="submit"
             disabled={pending}
-            className="btn-plain h-12 w-full text-sm text-out disabled:opacity-60"
+            className="btn-danger h-12 w-full text-sm"
           >
             {pending ? "Resetting…" : "Reset tournament"}
           </button>

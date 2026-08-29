@@ -47,6 +47,18 @@
   --win-deep:  #1F8A4C;
   --win-soft:  rgb(87 224 138 / 0.16);
   --win-line:  rgb(87 224 138 / 0.45);
+  /* Destructive actions. Sits at hue 350, which is 55 degrees from the gold
+     on the wheel: far enough to read as a different kind of thing, close
+     enough to stay in the same warm family and not clash with the navy.
+     Both ends of the gradient clear WCAG AA against white text (4.85 and
+     5.48), so the label is readable across the whole button.
+
+     Colour is never the only signal: these buttons say "Reset tournament"
+     and "Remove", because under deuteranopia this red and the gold converge. */
+  --danger:      #D3324C;
+  --danger-deep: #7A1327;
+  --danger-edge: #BE2540;
+
   --out:       #FF7A90;
   --out-deep:  #9E2740;
   --out-soft:  rgb(255 122 144 / 0.13);
@@ -194,7 +206,8 @@ body {
 
 /* ── Buttons: the chunky in-game kind that push down when tapped ── */
 .btn-gold,
-.btn-plain {
+.btn-plain,
+.btn-danger {
   border-radius: var(--r-cell);
   font-family: var(--f-display);
   letter-spacing: 0.02em;
@@ -217,22 +230,38 @@ body {
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.14), 0 4px 0 rgb(0 0 0 / 0.35);
 }
 
+.btn-danger {
+  background: linear-gradient(180deg, var(--danger), var(--danger-edge));
+  color: #FFFFFF;
+  border: 1px solid var(--danger);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.28), 0 4px 0 var(--danger-deep),
+    0 8px 16px rgb(0 0 0 / 0.34);
+}
+
 .btn-gold:active:not(:disabled),
-.btn-plain:active:not(:disabled) {
+.btn-plain:active:not(:disabled),
+.btn-danger:active:not(:disabled) {
   transform: translateY(3px);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3), 0 1px 0 rgb(0 0 0 / 0.35);
 }
 
 .btn-gold:hover:not(:disabled),
-.btn-plain:hover:not(:disabled) {
+.btn-plain:hover:not(:disabled),
+.btn-danger:hover:not(:disabled) {
   filter: brightness(1.07);
 }
 
+/* A disabled button drops to a flat neutral rather than a faded version of
+   its own colour. Gold at 50% over navy turns olive, which looks like a
+   rendering fault rather than a disabled control. */
 .btn-gold:disabled,
-.btn-plain:disabled {
-  opacity: 0.5;
+.btn-plain:disabled,
+.btn-danger:disabled {
+  background: var(--surface);
+  color: var(--fg-subtle);
+  border-color: var(--line);
   cursor: not-allowed;
-  box-shadow: none;
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
 }
 
 /* Display type sits over artwork, so it carries its own outline. */

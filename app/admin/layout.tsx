@@ -7,8 +7,6 @@ import { currentAdmin } from "@/lib/session";
    this screen for three hours; the arena treatment belongs on the screen the
    hall is watching, not on the one being worked in. */
 
-const NAV = [{ href: "/admin", label: "Admin" }];
-
 export default async function AdminLayout({
   children,
 }: {
@@ -18,31 +16,22 @@ export default async function AdminLayout({
 
   return (
     <div className="min-h-dvh bg-ground">
-      <header className="border-b border-line bg-surface">
-        <div className="mx-auto flex max-w-3xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
-          <Link href="/admin" className="flex items-center gap-2">
-            <Image src="/it-committee.png" alt="" width={26} height={26} />
-            <span className="font-display text-sm uppercase tracking-wide text-fg">
-              IIMBG Clash Royale
+      <header className="border-b-2 border-line-strong bg-surface shadow-lg">
+        <div className="mx-auto flex max-w-3xl items-center gap-3 px-4 py-4">
+          <Link href="/admin" className="flex min-w-0 items-center gap-2">
+            <Image src="/it-committee.png" alt="" width={40} height={40} priority />
+            {/* Bigger type stopped fitting beside the links on a 390px
+                phone: it wrapped and then overlapped them. Rather than
+                shrink the type back down, the wordmark goes short there and
+                the logo carries the identity. Full name from sm up. */}
+            <span className="titled whitespace-nowrap text-lg uppercase leading-none tracking-wide text-fg">
+              <span className="sm:hidden">IIMBG</span>
+              <span className="hidden sm:inline">IIMBG Clash Royale</span>
             </span>
           </Link>
 
-          {admin && (
-            <nav className="flex gap-1" aria-label="Admin">
-              {NAV.map((n) => (
-                <Link
-                  key={n.href}
-                  href={n.href}
-                  className="rounded-cell px-2.5 py-1 text-sm text-fg-muted hover:bg-surface-2 hover:text-fg"
-                >
-                  {n.label}
-                </Link>
-              ))}
-            </nav>
-          )}
-
-          <div className="ml-auto flex items-center gap-3">
-            <Link href="/" className="text-xs text-fg-subtle hover:text-fg">
+          <div className="ml-auto flex shrink-0 items-center gap-3">
+            <Link href="/" className="text-sm text-fg-muted hover:text-fg">
               View bracket
             </Link>
             {admin && (
@@ -54,7 +43,7 @@ export default async function AdminLayout({
               >
                 <button
                   type="submit"
-                  className="text-xs text-fg-subtle hover:text-fg"
+                  className="text-sm text-fg-muted hover:text-fg"
                   title={admin.username}
                 >
                   Sign out
